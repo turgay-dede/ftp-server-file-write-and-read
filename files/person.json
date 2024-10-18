@@ -1,0 +1,19 @@
+{
+  "name": "John Doe",
+  "age": 30,
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "zip": "10001"
+  },
+  "contacts": [
+    {
+      "type": "home",
+      "number": "1234567890"
+    },
+    {
+      "type": "work",
+      "number": "0987654321"
+    }
+  ]
+}

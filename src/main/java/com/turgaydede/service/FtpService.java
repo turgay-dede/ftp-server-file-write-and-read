@@ -30,23 +30,46 @@ public class FtpService {
         return ftp;
     }
 
-    public void uploadAllFiles(FTPClient ftpClient) throws IOException {
-        for (FilePath filePath : FilePath.values()) {
-            uploadFile(ftpClient, filePath);
+    public void uploadAllFiles(FTPClient ftpClient, String folderPath) throws IOException {
+        File folder = new File(folderPath);
+
+        if (!folder.exists()) {
+            System.out.println("Folder does not exist: " + folderPath);
+            return;
+        }
+
+        if (!folder.isDirectory()) {
+            System.out.println("Provided path is not a directory: " + folderPath);
+            return;
+        }
+
+        File[] files = folder.listFiles();
+
+        if (files == null || files.length == 0) {
+            System.out.println("No files found in the folder: " + folderPath);
+            return;
+        }
+
+        for (File file : files) {
+            if (file.isFile()) {
+                uploadFile(ftpClient, file);
+            }
         }
     }
 
 
-    public void uploadFile(FTPClient ftpClient, FilePath filePath) throws IOException {
-        File localFile = new File(filePath.getSourcePath());
+    public void uploadFile(FTPClient ftpClient, File localFile) throws IOException {
         try (InputStream inputStream = new FileInputStream(localFile)) {
-            String remoteFile = filePath.getDestDir() + localFile.getName();
+            String fileExtension = getFileExtension(localFile.getName());
+            String destDir = FilePath.getDestDirByExtension(fileExtension);
+            String remoteFile = destDir + localFile.getName();
             System.out.println("Uploading file to FTP: " + remoteFile);
+
             boolean done = ftpClient.storeFile(remoteFile, inputStream);
             if (done) {
-                System.out.println("File uploaded successfully: " + filePath.name());
+                System.out.println("File uploaded successfully: " + localFile.getName());
             } else {
-                System.out.println("File upload failed: " + filePath.name());
+                System.out.println("File upload failed: " + localFile.getName());
             }
         }
     }

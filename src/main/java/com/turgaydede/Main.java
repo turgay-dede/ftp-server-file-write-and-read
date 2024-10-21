@@ -15,7 +15,7 @@ public class Main {
 
         FTPClient ftpClient = ftpService.connectToFtp(server, username, password);
 
-        ftpService.uploadAllFiles(ftpClient,"filess");
+        ftpService.uploadAllFiles(ftpClient,"files");
 
 
         ftpService.readFile(ftpClient, FilePath.XLS.getDestDir());
